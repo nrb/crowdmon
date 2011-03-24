@@ -2,6 +2,7 @@ from flask import (Flask, Response, request, g,
 	jsonify, redirect, url_for, flash)
 
 from crowdmon import views
+from crowdmon import extensions
 
 DEFAULT_MODULES = (
 	(views.frontend, ""),
@@ -14,10 +15,14 @@ def create_app():
 
     modules = DEFAULT_MODULES
 
+    configure_db(app)
+
     configure_modules(app, modules)
 
     return app
     
+def configure_db(app):
+    extensions.db.init_app(app)
 
 def configure_modules(app, modules):
     for module, url_prefix in modules:
