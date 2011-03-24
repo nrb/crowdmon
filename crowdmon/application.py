@@ -3,6 +3,7 @@ from flask import (Flask, Response, request, g,
 
 from crowdmon import views
 from crowdmon import extensions
+from crowdmon.config import DefaultConfig
 
 DEFAULT_MODULES = (
 	(views.frontend, ""),
@@ -10,16 +11,25 @@ DEFAULT_MODULES = (
 
 __all__ = ["create_app"]
 
-def create_app():
+def create_app(config=None):
     app = Flask("CrowdMon")
 
     modules = DEFAULT_MODULES
-
+    
+    configure_app(app, config)
     configure_db(app)
 
     configure_modules(app, modules)
 
     return app
+
+def configure_app(app, config):
+    app.config.from_object(DefaultConfig())
+
+    if config is not None:
+        app.config.from_object(config)
+
+    app.config.from_envvar("APP_CONFIG", silent=True)
     
 def configure_db(app):
     extensions.db.init_app(app)
