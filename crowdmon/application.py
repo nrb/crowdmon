@@ -32,8 +32,10 @@ def configure_app(app, config):
     app.config.from_envvar("APP_CONFIG", silent=True)
     
 def configure_db(app):
+    """Install the DB extension into the app instance."""
     extensions.db.init_app(app)
 
 def configure_modules(app, modules):
+    """Attach the modules to the app."""
     for module, url_prefix in modules:
         app.register_module(module, url_prefix=url_prefix)
